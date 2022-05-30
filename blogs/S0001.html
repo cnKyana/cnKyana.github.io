@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Kyana">
+
+
+
+
+
+
+
+<title>TPM开发环境搭建 | Little Cabin</title>
+
+
+
+    <link rel="icon" href="/images/unity.png">
+
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Roboto+Mono&display=swap');
+</style>
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/frame.js"></script>
+    
+
+
+
+
+
+
+<script src='https://unpkg.com/valine@1.4.16/dist/Valine.min.js'></script>
+
+
+
+  <meta name="generator" content="Hexo 5.4.2"></head>
+  <body>
+    <div class="mask-border">
+    </div>
+
+    <div class="wrapper">
+
+      <div class="header">
+  <div class="flex-container">
+    <div class="header-inner">
+      <div class="site-brand-container">
+        <a href="/">
+          
+            Kyana
+          
+        </a>
+      </div>
+      <div id="menu-btn" class="menu-btn" onclick="toggleMenu()">
+        Menu
+      </div>
+      <nav class="site-nav">
+        <ul class="menu-list">
+          
+            
+              <li class="menu-item">
+                <a href="/archives/">归档</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/tags/">标签</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/menu/friends">友链</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/menu/resource">资源</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/menu/license">许可</a>
+              </li> 
+                   
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main">
+        <div class="flex-container">
+          <article id="post">
+  <div class="post-head">
+    <div class="post-info">
+        <div class="tag-list">
+            
+                
+                    <span class="post-tag">
+                        <a href="/tags/%E5%8F%AF%E4%BF%A1%E8%AE%A1%E7%AE%97/">
+                            可信计算
+                        </a>
+                    </span>    
+                           
+            
+        </div>
+        <div class="post-title">
+            
+            
+                TPM开发环境搭建
+            
+            
+        </div>
+        <span class="post-date">
+            Mar 28, 2022
+        </span>
+    </div>
+    <div class="post-img">
+        
+            <div class="h-line-primary"></div>
+              
+    </div>
+</div>
+  <div class="post-content">
+    <p>本次实验目的：安装TPM软件栈，为后续开发搭建环境</p>
+<p>本次实验环境：VMWare Workstation 16，Ubuntu 20.04</p>
+<p>其它依赖环境均为库中最新，使用清华源</p>
+<span id="more"></span>
+
+<p><strong>整个编译过程需要gcc编译器和make批处理工具的支持，提前下载！</strong></p>
+<h2 id="编译安装TPM模拟器"><a href="#编译安装TPM模拟器" class="headerlink" title="编译安装TPM模拟器"></a>编译安装TPM模拟器</h2><h3 id="编译tpm-server"><a href="#编译tpm-server" class="headerlink" title="编译tpm_server"></a>编译tpm_server</h3><p>使用<a target="_blank" rel="noopener" href="https://sourceforge.net/projects/ibmswtpm2/files/">ibmtpm1661</a>，比tss3默认的开源swtpm编译更方便。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从网站下载源码</span></span><br><span class="line">wget https://nchc.dl.sourceforge.net/project/ibmswtpm2/ibmtpm1661.tar.gz</span><br><span class="line"><span class="comment"># 解压源码，准备编译</span></span><br><span class="line"><span class="built_in">mkdir</span> ibmtpm1661 &amp;&amp; <span class="built_in">cd</span> ibmtpm1661</span><br><span class="line">tar xvf ../ibmtpm1661.tar.gz &amp;&amp; <span class="built_in">cd</span> src</span><br><span class="line"><span class="comment"># 编译源码，这一步需要openssl库支持</span></span><br><span class="line"><span class="comment"># 在debian上是libssl-dev, fedora是openssl-dev</span></span><br><span class="line"><span class="comment"># 开多线程编译，j后数字可以是4 8 16等</span></span><br><span class="line">make -j16</span><br></pre></td></tr></table></figure>
+
+<p>编译完获得一个叫tpm_server的可执行文件，就是模拟器本体。</p>
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P010d20edde9d07fa27.md.jpg" alt="S0001P010d20edde9d07fa27.md.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">下载解压模拟器源码</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P02922e1eb0476a8943.jpg" alt="S0001P02922e1eb0476a8943.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">编译模拟器可执行文件</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P037a629645355454af.jpg" alt="S0001P037a629645355454af.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">编译完成的模拟器</center>
+
+
+
+<h3 id="为模拟器添加服务"><a href="#为模拟器添加服务" class="headerlink" title="为模拟器添加服务"></a>为模拟器添加服务</h3><p>将模拟器复制到PATH中，方便后续执行，并为模拟器创建服务，方便管理。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 复制到PATH</span></span><br><span class="line">sudo <span class="built_in">cp</span> tpm_server /usr/local/bin/</span><br><span class="line"><span class="comment"># 创建服务</span></span><br><span class="line">sudo vim /lib/systemd/system/tpm-server.service</span><br></pre></td></tr></table></figure>
+
+<p>向模拟器添加下列内容（<code>i</code>），并保存退出（<code>ESC :wq</code>）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=TPM2.0 Simulator Server Daemon</span><br><span class="line">Before=tpm2-abrmd.service</span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/usr/local/bin/tpm_server</span><br><span class="line">Restart=always</span><br><span class="line">Environment=PATH=/usr/bin:/usr/local/bin</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p>之后重启服务配置，打开tpm-server服务并查看状态，出现如图所示的绿色即是成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 重启服务，使配置生效</span></span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line"><span class="comment"># 打开模拟器</span></span><br><span class="line">sudo service tpm-server start</span><br><span class="line"><span class="comment"># 查看模拟器状态</span></span><br><span class="line">service tpm-server status</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P045c615a43255af73c.jpg" alt="S0001P045c615a43255af73c.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">复制到PATH中</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P0520b91806ed9186cd.jpg" alt="S0001P0520b91806ed9186cd.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">添加为系统服务</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P06eb7b5db2409d9327.jpg" alt="S0001P06eb7b5db2409d9327.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">系统服务添加的内容</center>
+
+<p>​    <img src="https://www.imageoss.com/images/2022/03/29/S0001P07c6bbc00ac1a88990.jpg" alt="S0001P07c6bbc00ac1a88990.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">开启模拟器服务查看状态，默认监听2321和2322端口</center>
+
+
+
+<h2 id="编译安装软件栈"><a href="#编译安装软件栈" class="headerlink" title="编译安装软件栈"></a>编译安装软件栈</h2><h3 id="获取最新源码并编译"><a href="#获取最新源码并编译" class="headerlink" title="获取最新源码并编译"></a>获取最新源码并编译</h3><p>从github上直接下载最新的源码，所需依赖在源码的INSTALL.md文件中有介绍</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 需要先装git软件</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/tpm2-software/tpm2-tss.git</span><br><span class="line"><span class="comment"># 安装INSTALL中提供的依赖库</span></span><br><span class="line">sudo apt -y install autoconf-archive libcmocka0 libcmocka-dev procps iproute2 build-essential git pkg-config gcc libtool automake libssl-dev uthash-dev autoconf doxygen libjson-c-dev libini-config-dev libcurl4-openssl-dev libltdl-dev</span><br><span class="line"><span class="comment"># 创建配置信息</span></span><br><span class="line">./bootstrap</span><br><span class="line"><span class="comment"># 配置编译信息Makefile</span></span><br><span class="line"><span class="comment"># 打开了整体(integration)和单元(unit)的编译测试</span></span><br><span class="line">./configure --enable-unit --enable-integration</span><br><span class="line"><span class="comment"># 多线程编译</span></span><br><span class="line">make -j16</span><br><span class="line"><span class="comment"># 检查编译是否成功，没有红色的报错就算完成</span></span><br><span class="line">make check -j16</span><br><span class="line"><span class="comment"># 检查完成就安装，因为需要安装一些库文件，需要超级权限</span></span><br><span class="line">sudo make install</span><br><span class="line"><span class="comment"># 没有make的报错就算成功，中间可能有一个重链接的警告，忽略</span></span><br><span class="line"><span class="comment"># 重新加载动态链接</span></span><br><span class="line">sudo ldconfig</span><br></pre></td></tr></table></figure>
+
+<p>完成上述所有步骤，tpm2-tss的安装就完成了。tpm2-tss为后续软件提供基础库文件，缺失这些文件将导致编译失败。</p>
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P087255f182b779fa55.jpg" alt="S0001P087255f182b779fa55.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">下载源码</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P09446679defd0ba936.jpg" alt="S0001P09446679defd0ba936.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">安装编译依赖包</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P10b553c86727eff715.jpg" alt="S0001P10b553c86727eff715.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">创建配置信息</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P11595f92eeae09f455.jpg" alt="S0001P11595f92eeae09f455.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">创建编译配置</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P12f86c08ca99154564.jpg" alt="S0001P12f86c08ca99154564.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">编译配置信息完成的提示</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P13fdee3e05175abcdb.jpg" alt="S0001P13fdee3e05175abcdb.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">多线程编译</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P14e1f8d28b92087837.jpg" alt="S0001P14e1f8d28b92087837.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">编译完成，没有make的报错就是成功</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P158ef8763af94afe99.jpg" alt="S0001P158ef8763af94afe99.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">检查编译结果</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P16245f6a38bec386de.jpg" alt="S0001P16245f6a38bec386de.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">没有出现红色失败，编译检查通过</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P1786ff3d415ad49c64.jpg" alt="S0001P1786ff3d415ad49c64.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">重新链接动态关系库</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P189fa696cd38757274.jpg" alt="S0001P189fa696cd38757274.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0"></center>
+
+
+
+<h2 id="编译安装代理与资源管理器"><a href="#编译安装代理与资源管理器" class="headerlink" title="编译安装代理与资源管理器"></a>编译安装代理与资源管理器</h2><h3 id="获取最新源码并编译-1"><a href="#获取最新源码并编译-1" class="headerlink" title="获取最新源码并编译"></a>获取最新源码并编译</h3><p>从github上直接下载最新的源码，所需依赖在源码的INSTALL.md文件中有介绍。如果是编译完tpm2-tss再来编译，只需要安装<code>libglib2.0-dev(debian)</code>包即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取最新源码</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/tpm2-software/tpm2-abrmd.git</span><br><span class="line"><span class="comment"># 安装INSTALL文件中的依赖</span></span><br><span class="line">sudo apt install autoconf autoconf-archive automake libtool gcc libc6-dev pkg-config libglib2-dev </span><br><span class="line"><span class="comment"># 创建配置信息</span></span><br><span class="line">./bootstrap</span><br><span class="line"><span class="comment"># 创建编译配置， 开启整体和单元测试</span></span><br><span class="line"><span class="comment"># 将abrmd加载到dbus总线上，使之可以控制资源</span></span><br><span class="line"><span class="comment"># 将abrmd添加到系统服务中，方便后面控制</span></span><br><span class="line">./configure --enable-unit --enable-integration --with-dbuspolicydir=/etc/dbus-1/system.d --with-systemdsystemunitdir=/lib/systemd/system</span><br><span class="line"><span class="comment"># 多线程编译</span></span><br><span class="line">make -j16</span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">make check -j16</span><br><span class="line"><span class="comment"># 安装</span></span><br><span class="line">sudo make install</span><br><span class="line"><span class="comment"># 更新库链接关系</span></span><br><span class="line">sudo ldconfig</span><br></pre></td></tr></table></figure>
+
+<p>到这里已经完成tpm2-abrmd的基本安装，接下来可以使用了。通过服务配置使后面使用更方便。</p>
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P197ab6ffb296b6dde9.jpg" alt="S0001P197ab6ffb296b6dde9.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">获取最新源码</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P2010d13e7925bd51dd.jpg" alt="S0001P2010d13e7925bd51dd.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">提示缺失依赖包</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P2153d6b98f3eaffbe2.jpg" alt="S0001P2153d6b98f3eaffbe2.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">安装libglib2.0-dev解决</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P22347ef52b7ee5dd47.jpg" alt="S0001P22347ef52b7ee5dd47.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">创建配置文件同上，出现箭头所指即是编译配置创建完成</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P23c4638ceb8b58818d.jpg" alt="S0001P23c4638ceb8b58818d.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">多线程编译</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P24c02e6e0faadda90c.jpg" alt="S0001P24c02e6e0faadda90c.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">检查编译结果</center>
+
+
+
+<h3 id="配置并开启tpm2-abrmd服务"><a href="#配置并开启tpm2-abrmd服务" class="headerlink" title="配置并开启tpm2-abrmd服务"></a>配置并开启tpm2-abrmd服务</h3><p>这里需要将tpm2-abrmd与第一步安装的tpm-server链接起来，从而在没有tpm设备（/dev/tpm[0-9]）的情况下，使用模拟器搭建tpm开发环境。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加tpm2-abrmd进系统服务</span></span><br><span class="line">sudo <span class="built_in">cp</span> /usr/local/share/dbus-1/system-services/com.intel.tss2.Tabrmd.service /usr/share/dbus-1/system-services/</span><br><span class="line"><span class="comment"># 重启dbus</span></span><br><span class="line">sudo pkill -HUP dbus-daemon</span><br><span class="line"><span class="comment"># 修改服务配置，将tpm-server和tpm-abrmd链接起来</span></span><br><span class="line">sudo vim /lib/systemd/system/tpm2-abrmd.service</span><br><span class="line"><span class="comment"># 进入后按i键，控制光标添加下面这条语句到图示位置</span></span><br><span class="line">--tcti=<span class="string">&quot;libtss2-tcti-mssim.so.0:host=127.0.0.1,port=2321&quot;</span></span><br><span class="line"><span class="comment"># 重新加载服务配置，使刚才的修改生效</span></span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line"><span class="comment"># 开启tpm2-abrmd服务。注意这里可能有坑</span></span><br><span class="line">sudo service tpm2-abrmd start</span><br><span class="line"><span class="comment"># 查看tpm2-abrmd服务的状态</span></span><br><span class="line">sudo service tpm2-abrmd status</span><br></pre></td></tr></table></figure>
+
+<p>关于开启服务的排坑：第一次打开服务时，可能会卡很长时间，只得到一行查看日志的提升。查看日志或者服务状态，可以看到服务是红色的失败状态（提示依赖失败），这时直接使用<code>sudo service tpm2-abrmd restart</code>有较大概率不报错打开（其它提示未知），不知道原因。</p>
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P254258b29e0926ed98.jpg" alt="S0001P254258b29e0926ed98.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">安装并添加服务，重启dbus</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P26cc795453f3424795.jpg" alt="S0001P26cc795453f3424795.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">系统服务修改的部分</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P27717c80d61883069f.jpg" alt="S0001P27717c80d61883069f.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">重载系统服务，查看abrmd的状态，注意双引号</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P28a9713335788ad5fd.jpg" alt="S0001P28a9713335788ad5fd.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">启动提示依赖错误</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P297ea581db50af968c.jpg" alt="S0001P297ea581db50af968c.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">重启解决99%的问题</center>
+
+
+
+<h2 id="编译安装工具"><a href="#编译安装工具" class="headerlink" title="编译安装工具"></a>编译安装工具</h2><p>这一步是最简单的，只要前两步正确完成，两个服务都开启（绿色）状态，基本没有报错。</p>
+<p>具体安装步骤参考自<a target="_blank" rel="noopener" href="https://tpm2-tools.readthedocs.io/en/latest/INSTALL/">使用手册</a>，后续使用也应当参考<a target="_blank" rel="noopener" href="https://tpm2-tools.readthedocs.io/en/latest/">这里</a>，只有英文界面请自行<a target="_blank" rel="noopener" href="https://fanyi.baidu.com/">翻译</a>解决。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从github获取源码</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/tpm2-software/tpm2-tools.git</span><br><span class="line"><span class="comment"># 安装编译依赖，如果是编译了前两步再编译，只需要安装`libcurl4-gnutls-dev`即可</span></span><br><span class="line"><span class="comment"># 注意这步执行完，不要运行`sudo apt auoremove`！</span></span><br><span class="line">sudo apt-get install autoconf automake libtool pkg-config gcc \</span><br><span class="line">    libssl-dev libcurl4-gnutls-dev python-yaml</span><br><span class="line"><span class="comment"># 进入源码文件夹，创建配置信息</span></span><br><span class="line">./bootstrap</span><br><span class="line"><span class="comment"># 创建编译配置</span></span><br><span class="line"><span class="comment"># 开启的两个测试是自选项，可以不配置</span></span><br><span class="line"><span class="comment"># 如果开启了测试，在测试前要先`sudo apt install curl expect`否则测试不成功</span></span><br><span class="line">./configure --enable-unit --enable-integration</span><br><span class="line"><span class="comment"># 多线程编译</span></span><br><span class="line">make -j16</span><br><span class="line"><span class="comment"># 完成安装</span></span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<p>这一步安装完后，<code>/usr/local/bin</code>目录下会多出一堆<code>tpm2_</code>开头的可执行文件和一个<code>tpm2</code>可执行文件。前者全部软链接到了后者，等价，都可以在命令行中使用，具体使用方法查看手册。</p>
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P3092b511be807da6f3.jpg" alt="S0001P3092b511be807da6f3.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">获取最新源码</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P316795170086d15ba1.jpg" alt="S0001P316795170086d15ba1.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">安装编译依赖</center> 
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P32ce538e4272ac6c50.jpg" alt="S0001P32ce538e4272ac6c50.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">添加了测试，缺失expect的错误</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P335e95dadf0e929646.jpg" alt="S0001P335e95dadf0e929646.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">添加了测试，创建完编译配置的提示</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P3428325b7cb22c0349.jpg" alt="S0001P3428325b7cb22c0349.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">不使用测试的提示</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P35be8f8c9da64b1c68.jpg" alt="S0001P35be8f8c9da64b1c68.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">多线程编译和测试</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P37827c1fe302d30724.jpg" alt="S0001P37827c1fe302d30724.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">测试完成的提示</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P360ea9d9953b562b82.jpg" alt="S0001P360ea9d9953b562b82.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">缺少curl的测试失败</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P38dd87d1744e0b24d5.jpg" alt="S0001P38dd87d1744e0b24d5.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">编译安装结果</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P39b564280e278b179d.jpg" alt="S0001P39b564280e278b179d.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">安装后新增的可执行文件</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P4018cfbda9a0fa2ad0.jpg" alt="S0001P4018cfbda9a0fa2ad0.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">通过获取随机数测试工具的可用性，终端对字符做了转换</center>
+
+
+
+<h2 id="直接使用硬件的办法"><a href="#直接使用硬件的办法" class="headerlink" title="直接使用硬件的办法"></a>直接使用硬件的办法</h2><p>需要指出的是，这个实验前两步都在模拟硬件，如果我们的电脑和系统有硬件支持，就可以直接使用tpm2-tools，而无需繁琐的编译安装步骤。</p>
+<p>就Kyana的观察来讲，19年及以后的笔记本电脑，在购机后就默认有tpm-2.0模块，并在主板设置中已经打开。而现代操作系统大多也已默认支持tpm-2.0，并带有相关驱动。因此，我们要做的仅仅是在虚拟机系统启用tpm-2.0模块，并安装tpm2-tools。</p>
+<p>这里以VMWare-16和Ubuntu-20.04为例，使用VirtualBox或Hyper-V的用户需要自行查找解决。建议使用Ubuntu20，因为内核中已经编译支持了tpm模块，不用担心驱动问题，其它版本尚未测试。</p>
+<p>如图，新建虚拟机后不开机，在安装操作系统前更改虚拟机的硬件配置，从而启用tpm-2.0模块。需要同时将“访问控制-加密”和“高级-UEFI固件”打开，务必记住加密时输入的密码。完成后就能为虚拟机添加“可信平台模块”硬件了，添加完成正常开机，安装操作系统。</p>
+<p>操作系统安装完成后，只需在Ubuntu的命令行安装tpm2-tools即可正常使用。如果有个别模块是1.2版本，需要安装tpm-tools，两个版本不可以混装，将无法使用。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 2.0模块的工具安装</span></span><br><span class="line">sudo apt install tpm2-tools</span><br><span class="line"><span class="comment"># 1.2模块的工具安装</span></span><br><span class="line">sudo apt install tpm-tools</span><br></pre></td></tr></table></figure>
+
+<p>查看tpm模块的版本可以在Windows主机上进行，使用win（Windows徽标键）+R快捷键打开运行窗口，输入<code>tpm.msc</code>查看本机tpm相关信息，若如图所示，即是tpm模块已经准备就绪可以使用，若有出入，请自行查找解决。版本号在箭头所示处。</p>
+<p>由于这种方法安装完成的tpm工具需要访问设备，所以每次使用都需要使用root用户，在命令前加<code>sudo</code>，tss用户或许也可以但未测试过。</p>
+<p><a target="_blank" rel="noopener" href="https://www.imageoss.com/image/0BwN6"><img src="https://www.imageoss.com/images/2022/03/29/S0001P419bf33a8dbb58e9f2.jpg" alt="S0001P419bf33a8dbb58e9f2.jpg"></a></p>
+<center style="font-size:16px;color:#C0C0C0">开启虚拟机tpm硬件</center>
+
+<p><img src="https://www.imageoss.com/images/2022/03/29/S0001P42b4309123dd868fe1.jpg" alt="S0001P42b4309123dd868fe1.jpg"></p>
+<center style="font-size:16px;color:#C0C0C0">查看物理机tpm信息</center>
+</div> 
+
+<script>
+    window.onload = detectors();
+</script>
+  <div class="post-footer">
+    <div class="h-line-primary"></div>
+    <nav class="post-nav">
+        <div class="prev-item">
+           
+                <div class="icon arrow-left"></div>
+                <div class="post-link">
+                    <a href="/blogs/S0003">Prev</a>
+                </div>
+            
+        </div>
+        <div class="next-item">
+            
+                <div class="icon arrow-right"></div>
+                <div class="post-link">
+                  <a href="/blogs/S0002">Next</a>  
+                </div>  
+            
+        </div>
+    </nav>
+</div>
+
+</article>
+        </div>
+      </div>
+      
+      <div class="footer">
+    <div class="flex-container">
+        <div class="footer-text">
+            
+                Kyana：在超电磁许可甲子版下发布
+                <br>
+            
+            
+                Kyana | 
+            
+            
+                Powered by <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> & <a target="_blank" rel="noopener" href="https://github.com/zoeingwingkei/frame/">Frame</a>
+                
+        </div>
+    </div>
+</div>
+
+    </div>
+
+  </body>
+</html>
