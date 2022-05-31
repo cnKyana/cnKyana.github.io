@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Kyana">
+
+
+
+
+
+
+
+<title>Https服务器证书配置 | Little Cabin</title>
+
+
+
+    <link rel="icon" href="/images/unity.png">
+
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Roboto+Mono&display=swap');
+</style>
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/frame.js"></script>
+    
+
+
+
+
+
+
+<script src='https://unpkg.com/valine@1.4.16/dist/Valine.min.js'></script>
+
+
+
+  <meta name="generator" content="Hexo 5.4.2"></head>
+  <body>
+    <div class="mask-border">
+    </div>
+
+    <div class="wrapper">
+
+      <div class="header">
+  <div class="flex-container">
+    <div class="header-inner">
+      <div class="site-brand-container">
+        <a href="/">
+          
+            Kyana
+          
+        </a>
+      </div>
+      <div id="menu-btn" class="menu-btn" onclick="toggleMenu()">
+        Menu
+      </div>
+      <nav class="site-nav">
+        <ul class="menu-list">
+          
+            
+              <li class="menu-item">
+                <a href="/archives/">归档</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/tags/">标签</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/menu/friends">友链</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/menu/resource">资源</a>
+              </li> 
+                   
+          
+            
+              <li class="menu-item">
+                <a href="/menu/license">许可</a>
+              </li> 
+                   
+          
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main">
+        <div class="flex-container">
+          <article id="post">
+  <div class="post-head">
+    <div class="post-info">
+        <div class="tag-list">
+            
+                
+                    <span class="post-tag">
+                        <a href="/tags/GetReady/">
+                            GetReady
+                        </a>
+                    </span>    
+                
+                    <span class="post-tag">
+                        <a href="/tags/Https/">
+                            Https
+                        </a>
+                    </span>    
+                           
+            
+        </div>
+        <div class="post-title">
+            
+            
+                Https服务器证书配置
+            
+            
+        </div>
+        <span class="post-date">
+            May 16, 2022
+        </span>
+    </div>
+    <div class="post-img">
+        
+            <div class="h-line-primary"></div>
+              
+    </div>
+</div>
+  <div class="post-content">
+    <ol>
+<li>在服务器提供商处获得证书，一般其官网上有详细步骤的文档。</li>
+<li>以Ubuntu+Apache2为例，Redhat/Nginx酌情参考</li>
+<li>获取到crt证书并下载到服务器，_dnsauth记录可以删除</li>
+<li>在<code>/etc/apache2</code>下新建文件夹存放证书，以cert为例将公钥、私钥和证书链文件解压到此（重命名随意，和配置文件相对应即可）</li>
+<li>开启apache2的ssl模块<code>a2enmod ssl</code>后，可以看到<code>/etc/apache2/mods-enabled</code>下多了<code>ssl.conf ssl.load</code>两个文件</li>
+<li>将<code>/etc/apache2/site-avalible/default-ssl.conf</code>文件复制到enable文件夹，名字随意，也可以使用软连接的方式</li>
+<li>修改“服务器名”为自定义域名记录，“SSL证书文件”为公钥文件路径，“SSL证书密钥文件”为私钥路径，“SSL证书链文件”为证书链路径</li>
+<li>重启，自动生效</li>
+</ol>
+<p>重定向HTTP</p>
+<ol>
+<li>开启apache rewrite模块，在site-enable文件夹下新建配置文件，粘贴下面配置，自己替换</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">VirtualHost</span> *<span class="attr">:80</span>&gt;</span></span><br><span class="line">        ServerName www.superemagnet.top</span><br><span class="line">        ServerAlias superemagnet.top</span><br><span class="line">        DocumentRoot /var/www/html</span><br><span class="line">        RewriteEngine On</span><br><span class="line">        RewriteRule ^/(.*?)$ https://www.superemagnet.top/$1 [R]</span><br><span class="line">        ErrorLog $&#123;APACHE_LOG_DIR&#125;/error.log</span><br><span class="line">        CustomLog $&#123;APACHE_LOG_DIR&#125;/access.log combined</span><br><span class="line"><span class="tag">&lt;/<span class="name">VirtualHost</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RewriteEngine <span class="keyword">on</span></span><br><span class="line">RewriteCond   %&#123;HTTPS&#125; !=<span class="keyword">on</span></span><br><span class="line">RewriteRule   ^(.*)  https:<span class="comment">//%&#123;SERVER_NAME&#125;$1 [L,R=301]</span></span><br></pre></td></tr></table></figure>
+</div> 
+
+<script>
+    window.onload = detectors();
+</script>
+  <div class="post-footer">
+    <div class="h-line-primary"></div>
+    <nav class="post-nav">
+        <div class="prev-item">
+           
+                <div class="icon arrow-left"></div>
+                <div class="post-link">
+                    <a href="/blogs/S0003">Prev</a>
+                </div>
+            
+        </div>
+        <div class="next-item">
+            
+                <div class="icon arrow-right"></div>
+                <div class="post-link">
+                  <a href="/blogs/S0001">Next</a>  
+                </div>  
+            
+        </div>
+    </nav>
+</div>
+
+</article>
+        </div>
+      </div>
+      
+      <div class="footer">
+    <div class="flex-container">
+        <div class="footer-text">
+            
+                Kyana：在超电磁许可甲子版下发布
+                <br>
+            
+            
+                Kyana | 
+            
+            
+                Powered by <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> & <a target="_blank" rel="noopener" href="https://github.com/zoeingwingkei/frame/">Frame</a>
+                
+        </div>
+    </div>
+</div>
+
+    </div>
+
+  </body>
+</html>
